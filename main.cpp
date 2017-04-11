@@ -1,3 +1,6 @@
+//seprod5a
+//File: Main file for maze problem
+//Reads in a maze and solves the maze
 #include <iostream>
 #include <fstream>
 #include "maze.h"

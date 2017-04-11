@@ -98,7 +98,11 @@ void maze::mapMazeToGraph(graph &g)
                                 if ((j + 1) < cols && map[i][j + 1])
                                         g.addEdge(map[i][j], map[i][j + 1]);
                         }
-        
-        
 }
 
+void maze::findPathNonRecursive(int i, int j, graph g)
+//find a path from the start to the end using a non-recursive method (stack)
+{
+	
+
+}

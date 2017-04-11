@@ -20,6 +20,8 @@ public:
         void setMap(int i, int j, int n);
         int getMap(int i, int j) const;
         void mapMazeToGraph(graph &g);
+		void findPathRecursive(int i, int j, graph g);
+		void findPathNonRecursive(int i, int j, graph g);
         
 private:
         int rows; // number of rows in the maze
