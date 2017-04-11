@@ -1,43 +1,14 @@
-// Project 5
-
-#include <iostream>
-#include <limits.h>
-#include "d_except.h"
-#include <list>
-#include <fstream>
-#include "d_matrix.h"
-#include "graph.h"
-
-using namespace std;
-
-class maze
-{
-   public:
-      maze(ifstream &fin);
-      void print(int,int,int,int);
-      bool isLegal(int i, int j);
-
-      void setMap(int i, int j, int n);
-      int getMap(int i, int j) const;
-      void mapMazeToGraph(graph &g);
-
-   private:
-      int rows; // number of rows in the maze
-      int cols; // number of columns in the maze
-
-      matrix<bool> value;
-      matrix<int> map;      // Mapping from maze (i,j) values to node index values
-};
+#include "maze.h"
 
 void maze::setMap(int i, int j, int n)
 // Set mapping from maze cell (i,j) to graph node n. 
 {
 }
 
-int maze ::getMap(int i, int j) const
+//int maze ::getMap(int i, int j) const
 // Return mapping of maze cell (i,j) in the graph.
-{
-}
+//{
+//}
 
 maze::maze(ifstream &fin)
 // Initializes a maze by reading values from fin.  Assumes that the
@@ -106,42 +77,28 @@ bool maze::isLegal(int i, int j)
 void maze::mapMazeToGraph(graph &g)
 // Create a graph g that represents the legal moves in the maze m.
 {
+        for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                        if (value[i][j])
+                                map[i][j] = g.addNode();
+        
+        for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                        if (value[i][j])
+                        {
+                                if ((i - 1) > 0 && map[i - 1][j] > 0)
+                                        g.addEdge(map[i][j], map[i - 1][j]);
+                                
+                                if ((i + 1) < rows && map[i + 1][j] > 0)
+                                        g.addEdge(map[i][j], map[i + 1][j]);
+                                
+                                if ((j - 1) > 0 && map[i][j - 1] > 0)
+                                        g.addEdge(map[i][j], map[i][j - 1]);
+                                
+                                if ((j + 1) < cols && map[i][j + 1])
+                                        g.addEdge(map[i][j], map[i][j + 1]);
+                        }
+        
+        
 }
 
-
-
-int main()
-{
-   char x;
-   ifstream fin;
-   
-   // Read the maze from the file.
-   string fileName = "maze.txt";
-
-   fin.open(fileName.c_str());
-   if (!fin)
-   {
-      cerr << "Cannot open " << fileName << endl;
-      exit(1);
-   }
-
-   try
-   {
-
-      graph g;
-      while (fin && fin.peek() != 'Z')
-      {
-         maze m(fin);
-      }
-
-
-   } 
-   catch (indexRangeError &ex) 
-   { 
-      cout << ex.what() << endl; exit(1);
-   }
-   catch (rangeError &ex)
-   {
-      cout << ex.what() << endl; exit(1);
-   }
-}
