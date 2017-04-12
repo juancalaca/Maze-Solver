@@ -144,34 +144,37 @@ void maze::findPathNonRecursive(int i, int j, graph &g)
                                         g.visit(w.getId());
                                         i = g.numNodes();
                                         shPop = false;
-                                        /*if (v.getId() == 0)
-                                        {
-                                                i = 0;
-                                                j = 0;
-                                        }
-                                        else
-                                        {
-                                                for (int r = 0; r < rows; r++)
-                                                        for (int c = 0; c < cols; c++)
-                                                                if (map[r][c] == v.getId())
-                                                                {
-                                                                        i = r;
-                                                                        j = c;
-                                                                }
-                                        }
-                                        
-                                        if ((i - 1) > 0 && map[i - 1][j] == w.getId())
-                                                cout << "Go up" << endl;
-                                        
-                                        if ((i + 1) < rows && map[i + 1][j] == w.getId())
-                                                cout << "Go down" << endl;
-                                        
-                                        if ((j - 1) > 0 && map[i][j - 1] == w.getId())
-                                                cout << "Go left" << endl;
-                                        
-                                        if ((j + 1) < cols && map[i][j + 1] == w.getId())
-                                                cout << "Go right" << endl;*/
                                 }
+				
+
+				int I, J;	
+                                if (nodeId == 0)
+                                 {
+                                 	I = 0;
+                                 	J = 0;
+                                 }
+                                 else
+                                 {
+                                 	for (int r = 0; r < rows; r++)
+                                 		for (int c = 0; c < cols; c++)
+                                 			if (map[r][c] == nodeId)
+                                 			{
+                                 				I = r;
+                                 				J = c;
+                                 			}
+                                 }
+                                 
+                                 if ((I - 1) > 0 && map[I - 1][J] == w.getId())
+                                 cout << "Go up" << endl;
+                                 
+                                 if ((I + 1) < rows && map[I + 1][J] == w.getId())
+                                 cout << "Go down" << endl;
+                                 
+                                 if ((J - 1) > 0 && map[I][J - 1] == w.getId())
+                                 cout << "Go left" << endl;
+                                 
+                                 if ((J + 1) < cols && map[I][J + 1] == w.getId())
+                                 cout << "Go right" << endl;
                         }
                 }
                 
