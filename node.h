@@ -1,19 +1,9 @@
 #include <iostream>
-#include <fstream>
-#include "d_matrix.h"
 #include "d_except.h"
-#include <list>
-#include <stack>
 
 using namespace std;
 
-typedef int WeightType;
-typedef int NodeType;
-
-int const MaxNumNodex = 9999;
-
 typedef int NodeWeight;
-typedef int EdgeWeight;
 
 
 class node
@@ -29,7 +19,7 @@ public:
 	void setWeight(NodeWeight);
 	NodeWeight getWeight() const;
 
-	void setNode(int, NodeWeight, bool, bool);
+        void setNode(int id, NodeWeight w = 0, bool m = false, bool v = false);
 
 	void mark();
 	void unMark();
@@ -38,6 +28,8 @@ public:
 	void visit();
 	void unVisit();
 	bool isVisited() const;
+        
+        friend ostream &operator<<(ostream &ostr, const node &n);
 
 private:
 	int id;

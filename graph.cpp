@@ -1,20 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include "d_matrix.h"
-#include "d_except.h"
 #include "graph.h"
-#include <list>
-#include <stack>
-
-using namespace std;
-
-typedef int WeightType;
-typedef int NodeType;
-
-int const MaxNumNodex = 9999;
-
-typedef int NodeWeight;
-typedef int EdgeWeight;
 
 
 graph::graph()
@@ -254,7 +238,9 @@ void graph::printNodes() const
 	cout << "Num nodes: " << numNodes() << endl;
 
 	for (int i = 0; i < numNodes(); i++)
-		cout << getNode(i);
+        {
+                cout << getNode(i);
+        }
 }
 
 void graph::printEdges() const

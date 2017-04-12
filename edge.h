@@ -1,18 +1,7 @@
 #include <iostream>
-#include <fstream>
-#include "d_matrix.h"
-#include "d_except.h"
-#include <list>
-#include <stack>
 
 using namespace std;
 
-typedef int WeightType;
-typedef int NodeType;
-
-int const MaxNumNodex = 9999;
-
-typedef int NodeWeight;
 typedef int EdgeWeight;
 
 
@@ -43,6 +32,7 @@ public:
 	bool isVisited() const;
 
 	void setEdge(int, int, EdgeWeight);
+        friend ostream &operator<<(ostream &ostr, const edge &e);
 
 private:
 	int source;

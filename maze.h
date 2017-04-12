@@ -20,8 +20,11 @@ public:
         void setMap(int i, int j, int n);
         int getMap(int i, int j) const;
         void mapMazeToGraph(graph &g);
-		void findPathRecursive(int i, int j, graph g);
-		void findPathNonRecursive(int i, int j, graph g);
+        void findPathRecursive(int i, int j, graph &g);
+        void findPathNonRecursive(int i, int j, graph &g);
+        int getRows();
+        int getCols();
+        void printDirectionsNonRecursive();
         
 private:
         int rows; // number of rows in the maze
@@ -29,4 +32,6 @@ private:
         
         matrix<bool> value;
         matrix<int> map;      // Mapping from maze (i,j) values to node index values
+        matrix<int> adjMat;     //adjacency matrix
+        stack<node> s;
 };

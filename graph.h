@@ -4,6 +4,8 @@
 #include "d_except.h"
 #include <list>
 #include <stack>
+#include "node.h"
+#include "edge.h"
 
 using namespace std;
 

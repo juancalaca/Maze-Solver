@@ -31,7 +31,9 @@ int main()
                 while (fin && fin.peek() != 'Z')
                 {
                         maze m(fin);
-                        m.print(12, 12, 11, 12);
+                        m.mapMazeToGraph(g);
+                        m.findPathNonRecursive(0, 0, g);
+                        cout << boolalpha << g.allNodesVisited();
                 }
                 
                 

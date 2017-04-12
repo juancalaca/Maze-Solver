@@ -1,20 +1,4 @@
 #include "node.h"
-#include <iostream>
-#include <fstream>
-#include "d_matrix.h"
-#include "d_except.h"
-#include <list>
-#include <stack>
-
-using namespace std;
-
-typedef int WeightType;
-typedef int NodeType;
-
-int const MaxNumNodex = 9999;
-
-typedef int NodeWeight;
-typedef int EdgeWeight;
 
 node::node()
 // Constructor, creates a new, uninitialized node. Id is initialized
@@ -65,7 +49,7 @@ int node::getId() const
 	return id;
 }
 
-void node::setNode(int id, NodeWeight w = 0, bool m = false, bool v = false)
+void node::setNode(int id, NodeWeight w, bool m, bool v)
 // Initialize a node;
 {
 	setId(id);

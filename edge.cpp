@@ -1,21 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include "d_matrix.h"
-#include "d_except.h"
 #include "edge.h"
-#include <list>
-#include <stack>
-
-using namespace std;
-
-typedef int WeightType;
-typedef int NodeType;
-
-int const MaxNumNodex = 9999;
-
-typedef int NodeWeight;
-typedef int EdgeWeight;
-
 
 edge::edge()
 // Constructor, sets edge to invalid, unmarked and unvisited.
