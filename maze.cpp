@@ -235,7 +235,7 @@ void maze::printDirectionsNonRecursive()
 }
 
 void maze::findPathRecursive(int &i, int j, graph g)
-//sovles the maze recursively
+//solves the maze recursively
 {
 	
 		
