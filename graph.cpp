@@ -1,3 +1,7 @@
+//seprod5a
+//File: graph class function declarations
+//this function contains all of the functions in the graph class
+//that manipulate graphs
 #include "graph.h"
 
 

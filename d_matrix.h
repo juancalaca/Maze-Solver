@@ -1,3 +1,5 @@
+//seprod5a
+//File: d_matrix header file provided
 #ifndef MATRIX_CLASS
 #define MATRIX_CLASS
 

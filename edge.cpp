@@ -1,3 +1,7 @@
+//seprod5a
+//File: edge class
+//this file has all of the member functions for the edge class
+//(taken from the graph.h header file provided and moved for clarity)
 #include "edge.h"
 
 edge::edge()

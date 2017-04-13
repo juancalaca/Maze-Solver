@@ -1,3 +1,7 @@
+//seprod5a
+//File: Node class 
+//this file contains all of the functions for the node class
+//that handle manipulating nodes of graphs
 #include "node.h"
 
 node::node()

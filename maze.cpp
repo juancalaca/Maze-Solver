@@ -187,16 +187,19 @@ void maze::findPathNonRecursive(int i, int j, graph &g)
 }
 
 int maze::getCols()
+//gets the number of columns
 {
         return cols;
 }
 
 int maze::getRows()
+//gets the number of rows
 {
         return rows;
 }
 
 void maze::printDirectionsNonRecursive()
+//prints the directions that solve the maze
 {
         stack<node> path;
         
@@ -229,4 +232,13 @@ void maze::printDirectionsNonRecursive()
                 
                 print(rows - 1, cols - 1, i, j);
         }
+}
+
+void maze::findPathRecursive(int &i, int j, graph g)
+//sovles the maze recursively
+{
+	
+		
+
+
 }

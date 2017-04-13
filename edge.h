@@ -1,3 +1,8 @@
+//seprod5a
+//File: edge class header file
+//this file handles the edge class and all of its data members
+//and member functions
+//(class was separated from original graph.h header file for clarity
 #include <iostream>
 
 using namespace std;
