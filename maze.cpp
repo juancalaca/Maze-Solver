@@ -335,8 +335,13 @@ void maze::printPathRecursive(int sI, int sJ)
         {
                 i = directions.top();
                 directions.pop();
-                if (directions.empty()) break;
-                int w = directions.top();
+                int w;
+                if (directions.empty())
+                {
+                        w = map[rows-1][cols-1];
+                }
+                else
+                        w = directions.top();
                 if (i == 0)
                 {
                         r = 0;
