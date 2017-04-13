@@ -1,14 +1,10 @@
+// Project 5
+// seprod5a
+//
+// File: Maze function declaration file. This file contains all the
+// defined functions of class maze.
+
 #include "maze.h"
-
-void maze::setMap(int i, int j, int n)
-// Set mapping from maze cell (i,j) to graph node n. 
-{
-}
-
-//int maze ::getMap(int i, int j) const
-// Return mapping of maze cell (i,j) in the graph.
-//{
-//}
 
 maze::maze(ifstream &fin)
 // Initializes a maze by reading values from fin.  Assumes that the
@@ -31,7 +27,6 @@ maze::maze(ifstream &fin)
       }
 
         map.resize(rows,cols);
-        adjMat.resize(rows, cols);
 }
 
 void maze::print(int goalI, int goalJ, int currI, int currJ)
@@ -78,53 +73,55 @@ bool maze::isLegal(int i, int j)
 void maze::mapMazeToGraph(graph &g)
 // Create a graph g that represents the legal moves in the maze m.
 {
+        // add node if cell (i,j) is a legal cell in maze
+        // store node index in map matrix
         for (int i = 0; i < rows; i++)
                 for (int j = 0; j < cols; j++)
                         if (value[i][j])
                                 map[i][j] = g.addNode();
         
+        // add edge if move is legal and within boundaries of maze
         for (int i = 0; i < rows; i++)
                 for (int j = 0; j < cols; j++)
                         if (value[i][j])
                         {
-                                if ((i - 1) > 0 && map[i - 1][j] > 0)
-                                {
+                                // move up
+                                if ((i - 1) >= 0 && value[i-1][j])
                                         g.addEdge(map[i][j], map[i - 1][j]);
-                                        adjMat[i][j] = 1;
-                                }
                                 
-                                if ((i + 1) < rows && map[i + 1][j] > 0)
-                                {
+                                // move down
+                                if ((i + 1) < rows && value[i+1][j])
                                         g.addEdge(map[i][j], map[i + 1][j]);
-                                        adjMat[i][j] = 1;
-                                }
                                 
-                                if ((j - 1) > 0 && map[i][j - 1] > 0)
-                                {
+                                // move left
+                                if ((j - 1) >= 0 && value[i][j-1])
                                         g.addEdge(map[i][j], map[i][j - 1]);
-                                        adjMat[i][j] = 1;
-                                }
                                 
-                                if ((j + 1) < cols && map[i][j + 1])
-                                {
+                                // move right
+                                if ((j + 1) < cols && value[i][j+1])
                                         g.addEdge(map[i][j], map[i][j + 1]);
-                                        adjMat[i][j] = 1;
-                                }
                         }
 }
 
 void maze::findPathNonRecursive(int i, int j, graph &g)
 //find a path from the start to the end using a non-recursive method (stack)
 {
-        g.clearVisit();
-        s.push(g.getNode(map[i][j]));
-        g.visit(map[i][j]);
-        bool found = false;
+        if (i < 0 || i > rows || j < 0 || j > cols)
+                throw rangeError("Bad value in maze::findPathNonRecursive");
         
+        
+        g.clearVisit();                 // unvisit all nodes
+        s.push(g.getNode(map[i][j]));   // push starting node into stack
+        g.visit(map[i][j]); // visit starting node
+        found = false;                  // initialize found
+        
+        // find paths until found or stack is empty
         while (!s.empty() || !found)
         {
-                bool shPop = true;
-                node v = s.top();
+                bool shPop = true; // bool should pop if no unvisited neighbors or no neighbors
+                node v = s.top();  // current node
+                
+                // check if target node is reached
                 if (v.getId() == map[rows-1][cols-1])
                 {
                         found = true;
@@ -132,83 +129,157 @@ void maze::findPathNonRecursive(int i, int j, graph &g)
                         
                 }
                 
+                // find neighbors of v
                 int nodeId = v.getId();
+                for (int i = 0; i < g.numNodes(); i++)
+                {
+                        node test = g.getNode(i);
+                        if (g.isEdge(nodeId, i))
+                        {
+                                node w = g.getNode(i);
+                                
+                                // unvisited neighbor
+                                if (!w.isVisited())
+                                {
+                                        s.push(w); // push into stack
+                                        g.visit(w.getId()); // visitnode
+                                        i = g.numNodes(); // break for loop
+                                        shPop = false; // should pop false because v has neighbor
+                                }
+				
+                        }
+                }
+                
+                if (shPop) s.pop(); // pop if no neighbors or no unvisited neighbors
+        }
+
+        // print directions if found otherwise no path
+        if (found)
+        {
+                printPathNonRecursive();
+        }
+        else // empty stack and print
+        {
+                cout << "No path was found" << endl;
+                while (!s.empty()) s.pop(); // empty stack
+        }
+        
+        
+}
+
+void maze::initializePathRecursive(int i, int j, graph &g)
+// helper function initializes parameters for finding path recursively
+{
+        // check if starting node is legal
+        if (i < 0 || i > rows || j < 0 || j > cols)
+                throw rangeError("Bad value in maze::initializePathRecursive");
+        
+        g.clearVisit(); // unvisit all nodes
+        pred.resize(g.numNodes()); // resize vector pred to fit all nodes
+        node startingNode = g.getNode(map[i][j]); // get starting node
+        found = false; // initially target not found
+        findPathRecursive(startingNode, g, found); // start recursive path
+}
+
+void maze::findPathRecursive(node x, graph &g, bool &found)
+//solves the maze recursively
+{
+        int nodeId = x.getId(); // store id of current node x
+        
+        // base case: current node x is target node
+        if (nodeId == map[rows-1][cols-1])
+        {
+                found = true;
+                return;
+        }
+        else
+        {
+                g.visit(nodeId); // visit current node x
+                // find all neighbors of node x
                 for (int i = 0; i < g.numNodes(); i++)
                 {
                         if (g.isEdge(nodeId, i))
                         {
                                 node w = g.getNode(i);
-                                if (!w.isVisited())
+                                
+                                // unvisited neighbor
+                                if (!w.isVisited() && !found)
                                 {
-                                        s.push(w);
-                                        g.visit(w.getId());
-                                        i = g.numNodes();
-                                        shPop = false;
+                                        pred[w.getId()] = nodeId; // store predecessor information
+                                        
+                                        //call findPathRecursive on unvisited node w neighbor of node x
+                                        findPathRecursive(w, g, found);
                                 }
-				
-
-				int I, J;	
-                                if (nodeId == 0)
-                                 {
-                                 	I = 0;
-                                 	J = 0;
-                                 }
-                                 else
-                                 {
-                                 	for (int r = 0; r < rows; r++)
-                                 		for (int c = 0; c < cols; c++)
-                                 			if (map[r][c] == nodeId)
-                                 			{
-                                 				I = r;
-                                 				J = c;
-                                 			}
-                                 }
-                                 
-                                 if ((I - 1) > 0 && map[I - 1][J] == w.getId())
-                                 cout << "Go up" << endl;
-                                 
-                                 if ((I + 1) < rows && map[I + 1][J] == w.getId())
-                                 cout << "Go down" << endl;
-                                 
-                                 if ((J - 1) > 0 && map[I][J - 1] == w.getId())
-                                 cout << "Go left" << endl;
-                                 
-                                 if ((J + 1) < cols && map[I][J + 1] == w.getId())
-                                 cout << "Go right" << endl;
+                                
                         }
                 }
                 
-                if (shPop) s.pop();
         }
-
-        if (found) printDirectionsNonRecursive();
-        
         
 }
 
-int maze::getCols()
-//gets the number of columns
-{
-        return cols;
-}
-
-int maze::getRows()
-//gets the number of rows
-{
-        return rows;
-}
-
-void maze::printDirectionsNonRecursive()
+void maze::printPathNonRecursive()
 //prints the directions that solve the maze
 {
-        stack<node> path;
-        
+        stack<node> path; // stack that stores nodes in order of path
+        stack<node> directions; // stack that stores nodes in order of path
+        // empty stack s
+        // store path from starting node (top element in path) to target node in stack path
         while (!s.empty())
         {
                 path.push(s.top());
+                directions.push(s.top());
                 s.pop();
         }
         
+        
+        cout << "------------------------------------------------------" << endl;
+        cout << "                        PATH DIRECTIONS" << endl;
+        
+        // print directions
+        while (!directions.empty())
+        {
+                node v = directions.top();
+                directions.pop();
+                if (directions.empty()) break;
+                node w = directions.top();
+                int i, j;
+                if (v.getId() == 0)
+                {
+                        i = 0;
+                        j = 0;
+                }
+                else
+                {
+                        for (int r = 0; r < rows; r++)
+                                for (int c = 0; c < cols; c++)
+                                        if (map[r][c] == v.getId())
+                                        {
+                                                i = r;
+                                                j = c;
+                                                r = rows;
+                                                c = cols;
+                                        }
+                }
+                
+                if ((i - 1) > 0 && map[i - 1][j] == w.getId())
+                        cout << "Go up" << endl;
+                
+                if ((i + 1) < rows && map[i + 1][j] == w.getId())
+                        cout << "Go down" << endl;
+                
+                if ((i - 1) > 0 && map[i][j - 1] == w.getId())
+                        cout << "Go left" << endl;
+                
+                if ((i + 1) < cols && map[i][j + 1] == w.getId())
+                        cout << "Go right" << endl;
+                
+        }
+        
+        cout << "------------------------------------------------------" << endl;
+        cout << "                        PATH" << endl;
+        
+        // print path
         while (!path.empty())
         {
                 node v = path.top();
@@ -227,18 +298,105 @@ void maze::printDirectionsNonRecursive()
                                         {
                                                 i = r;
                                                 j = c;
+                                                r = rows;
+                                                c = cols;
                                         }
                 }
                 
                 print(rows - 1, cols - 1, i, j);
         }
+        
 }
 
-void maze::findPathRecursive(int &i, int j, graph g)
-//solves the maze recursively
+void maze::printPathRecursive(int sI, int sJ)
+// prints frame by frame of path
+// parameter (sI,sJ) indices of starting node for path
 {
-	
-		
-
-
+        stack<int> path; // stack that stores node indices in order of path
+        stack<int> directions; // stack that stores node indices in order of path
+        int i = pred.size() - 1; // initialize i with index of target in pred vector
+        path.push(map[rows-1][cols-1]); // first push into stack target node index
+        
+        // reconstruct path from pred vector information
+        // until we reach starting node
+        while (path.top() != map[sI][sJ])
+        {
+                path.push(pred[i]); // push index into stack
+                directions.push(pred[i]); // push index into stack
+                i = path.top();     // check predecessor of pushed node index
+        }
+        
+        cout << "------------------------------------------------------" << endl;
+        cout << "                        PATH DIRECTIONS" << endl;
+        
+        //print directions
+        int r, c;
+        while (!directions.empty())
+        {
+                i = directions.top();
+                directions.pop();
+                if (directions.empty()) break;
+                int w = directions.top();
+                if (i == 0)
+                {
+                        r = 0;
+                        c = 0;
+                }
+                else
+                {
+                        for (int k = 0; k < rows; k++)
+                                for (int l = 0; l < cols; l++)
+                                        if (map[k][l] == i)
+                                        {
+                                                r = k;
+                                                c = l;
+                                                l = cols;
+                                                k = rows;
+                                        }
+                }
+                
+                if ((r - 1) > 0 && map[r - 1][c] == w)
+                        cout << "Go up" << endl;
+                
+                if ((r + 1) < rows && map[r + 1][c] == w)
+                        cout << "Go down" << endl;
+                
+                if ((c - 1) > 0 && map[r][c - 1] == w)
+                        cout << "Go left" << endl;
+                
+                if ((c + 1) < cols && map[r][c + 1] == w)
+                        cout << "Go right" << endl;
+        }
+        
+        // print path
+        cout << "------------------------------------------------------" << endl;
+        cout << "                        PATH" << endl;
+        while (!path.empty())
+        {
+                i = path.top();
+                path.pop();
+                if (i == 0)
+                {
+                        r = 0;
+                        c = 0;
+                }
+                else
+                {
+                        for (int k = 0; k < rows; k++)
+                                for (int l = 0; l < cols; l++)
+                                        if (map[k][l] == i)
+                                        {
+                                                r = k;
+                                                c = l;
+                                                l = cols;
+                                                k = rows;
+                                        }
+                }
+                
+                print(rows - 1, cols - 1, r, c);
+        }
+        
+        
 }
+
+

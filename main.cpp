@@ -32,8 +32,18 @@ int main()
                 {
                         maze m(fin);
                         m.mapMazeToGraph(g);
+                        cout << "------------------------------------------------------" << endl;
+                        cout << "               Finding path recursively" << endl;
+                        m.initializePathRecursive(0, 0, g);
+                        if (m.Found())
+                        {
+                                m.printPathRecursive(0, 0);
+                        }
+                        else
+                                cout << "No path was found" << endl;
+                        cout << "------------------------------------------------------" << endl;
+                        cout << "             Finding path non-recursively" << endl;
                         m.findPathNonRecursive(0, 0, g);
-                        cout << boolalpha << g.allNodesVisited();
                 }
                 
                 
