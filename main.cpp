@@ -1,9 +1,11 @@
-//seprod5a
-//File: Main file for maze problem
-//Reads in a maze and solves the maze
+// Project 5
+// seprod5b
+//
+// File: Main file for maze problem
+// Reads in a maze and solves the maze
 #include <iostream>
 #include <fstream>
-#include "maze.h"
+#include "maze.h" //include maze class
 
 
 using namespace std;
@@ -27,23 +29,31 @@ int main()
         try
         {
                 
-                graph g;
+                graph g; // create graph
                 while (fin && fin.peek() != 'Z')
                 {
                         maze m(fin);
-                        m.mapMazeToGraph(g);
+                        m.mapMazeToGraph(g); //create graph based on read maze
+                        
+                        //find shortest path using BFS
                         cout << "------------------------------------------------------" << endl;
-                        cout << "               Finding path recursively" << endl;
-                        m.initializePathRecursive(0, 0, g);
-                        if (m.Found())
-                        {
-                                m.printPathRecursive(0, 0);
-                        }
+                        cout << "               Finding shortest path" << endl;
+                        cout << "                Using BFS Algorithm" << endl;
+                        bool found = m.findShortestPath1(0, 0, m.getRow() - 1, m.getCol() - 1, g);
+                        if (found)
+                                m.printPath(0, 0);
                         else
-                                cout << "No path was found" << endl;
+                                cout << "Path not found" << endl;
+                        
+                        //find shortest path using Dijkstra's Algorithm
                         cout << "------------------------------------------------------" << endl;
-                        cout << "             Finding path non-recursively" << endl;
-                        m.findPathNonRecursive(0, 0, g);
+                        cout << "               Finding shortest path" << endl;
+                        cout << "             Using Dijkstra's Algorithm" << endl;
+                        found = m.findShortestPath2(0, 0, m.getRow() - 1, m.getCol() - 1, g);
+                        if (found)
+                                m.printPath(0, 0);
+                        else
+                                cout << "Path not found" << endl;
                 }
                 
                 

@@ -36,7 +36,7 @@ class graph
    graph &operator=(const graph &);  
 	//graph assignment operator
 
-   void addEdge(int i, int j, NodeWeight w = 0);
+   void addEdge(int i, int j, NodeWeight w = 1);
 	//adds an edge to a graph
    void removeEdge(int i, int j);
 	//removes an edge from a graph

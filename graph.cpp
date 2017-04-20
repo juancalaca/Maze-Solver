@@ -272,7 +272,7 @@ ostream &operator<<(ostream &ostr, const graph &g)
 	return ostr;
 }
 
-node &graph::getNode(int i)
+node& graph::getNode(int i)
 // Return a reference to the ith node.  Throws an exception if i is
 // too small or too large.
 {

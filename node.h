@@ -48,6 +48,8 @@ public:
 	//if the node has been visited or not
         
         friend ostream &operator<<(ostream &ostr, const node &n);
+        
+        friend bool operator<(const node &lhs, const node &rhs);
 
 private:
 	int id;

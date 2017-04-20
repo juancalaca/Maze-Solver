@@ -114,3 +114,8 @@ ostream &operator<<(ostream &ostr, const node &n)
 
 	return ostr;
 }
+
+bool operator<(const node &lhs, const node &rhs)
+{
+        return lhs.weight > rhs.weight;
+}

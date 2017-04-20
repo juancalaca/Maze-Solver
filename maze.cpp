@@ -1,5 +1,5 @@
 // Project 5
-// seprod5a
+// seprod5b
 //
 // File: Maze function declaration file. This file contains all the
 // defined functions of class maze.
@@ -109,10 +109,13 @@ void maze::findPathNonRecursive(int i, int j, graph &g)
         if (i < 0 || i > rows || j < 0 || j > cols)
                 throw rangeError("Bad value in maze::findPathNonRecursive");
         
+        // clear stack s for path
+        while(!s.empty())
+                s.pop();
         
         g.clearVisit();                 // unvisit all nodes
         s.push(g.getNode(map[i][j]));   // push starting node into stack
-        g.visit(map[i][j]); // visit starting node
+        g.visit(map[i][j]);             // visit starting node
         found = false;                  // initialize found
         
         // find paths until found or stack is empty
@@ -223,6 +226,7 @@ void maze::printPathNonRecursive()
 {
         stack<node> path; // stack that stores nodes in order of path
         stack<node> directions; // stack that stores nodes in order of path
+
         // empty stack s
         // store path from starting node (top element in path) to target node in stack path
         while (!s.empty())
@@ -305,12 +309,12 @@ void maze::printPathNonRecursive()
                 
                 print(rows - 1, cols - 1, i, j);
         }
-        
 }
 
-void maze::printPathRecursive(int sI, int sJ)
+void maze::printPath(int sI, int sJ)
 // prints frame by frame of path
 // parameter (sI,sJ) indices of starting node for path
+// precondition: pred vector is populated with path information
 {
         stack<int> path; // stack that stores node indices in order of path
         stack<int> directions; // stack that stores node indices in order of path
@@ -327,7 +331,7 @@ void maze::printPathRecursive(int sI, int sJ)
         }
         
         cout << "------------------------------------------------------" << endl;
-        cout << "                        PATH DIRECTIONS" << endl;
+        cout << "               PATH DIRECTIONS" << endl;
         
         //print directions
         int r, c;
@@ -400,8 +404,120 @@ void maze::printPathRecursive(int sI, int sJ)
                 
                 print(rows - 1, cols - 1, r, c);
         }
-        
-        
 }
 
+bool maze::findShortestPath1(int startR, int startC, int destR, int destC, graph &g)
+//find shortest path using BFS algorithm
+//parameters startR and startC, coordinates of starting node
+//parameters endR and endC, coordingates of target node
+{
+        queue<node> q;
+        g.clearVisit();                         //unvisit all nodes
+        q.push(g.getNode(map[startR][startC])); //push starting node into queue q
+        g.visit(map[startR][startC]);           //visit starting node
+        pred.resize(g.numNodes());              //reset pred vector
+        
+        //run BFS until queue empty or target found
+        while (!q.empty())
+        {
+                node v = q.front(); // get front node
+                
+                // find all neighbors of v
+                for (int i = 0; i < g.numNodes(); i++)
+                {
+                        if (g.isEdge(v.getId(), i))
+                        {
+                                node w = g.getNode(i);
+                                
+                                //neighbor w is unvisited
+                                if (!w.isVisited())
+                                {
+                                        q.push(w); //push into queue
+                                        pred[w.getId()] = v.getId(); //store parent information
+                                        g.visit(w.getId()); // visit node
+                                        
+                                        // target node found return true
+                                        if (w.getId() == map[destR][destC])
+                                        {
+                                                return true;
+                                        }
+                                }
+                        }
+                }
+                q.pop(); //pop queue
+        }
+        
+        return false; // target not found
+}
 
+bool maze::findShortestPath2(int startR, int startC, int endR, int endC, graph &g)
+//find shortest path using Dijkstra's algorithm
+//parameters startR and startC, coordinates of starting node
+//parameters endR and endC, coordingates of target node
+{
+        priority_queue<node> pq;
+        pq.push(g.getNode(map[startR][startC])); //push starting node into priority queue
+        
+        //push all nodes into priority queue
+        for (int i = 0; i < g.numNodes(); i++)
+        {
+                if (i == map[startR][startC]) continue; //starting node already pushed
+                g.setNodeWeight(i, 9999999); //set all other node weights to "infinity"
+                pq.push(g.getNode(i));  //push node into priority queue
+        }
+        pred.resize(g.numNodes()); //reset pred vector
+        
+        //run algorithm until pq empty or target found
+        while (!pq.empty())
+        {
+                node v = pq.top(); //get top node
+                pq.pop(); //pop top node
+                
+                if (v.getId() == map[endR][endC]) //target found
+                        return true;
+                else //target not found
+                        g.visit(v.getId()); //visit top node
+                
+                        // find neighbors of node v
+                        for (int i = 0; i < g.numNodes(); i++)
+                        {
+                                if (g.isEdge(v.getId(), i))
+                                {
+                                        node w = g.getNode(i);
+                                        
+                                        //neighbor w is unvisited
+                                        if (!w.isVisited())
+                                        {
+                                                // update weight information
+                                                int weight = min(w.getWeight(), v.getWeight() + g.getEdgeWeight(v.getId(), w.getId()));
+                                                
+                                                // if new shortest path change weight and parent info
+                                                if (weight != w.getWeight())
+                                                {
+                                                        g.setNodeWeight(w.getId(), weight);
+                                                        pred[w.getId()] = v.getId();
+                                                        sortPriorityQueue(pq, g); //sort priority queue
+                                                }
+                                        }
+                                }
+                                
+                        }
+        }
+        
+        return false; //target not found
+}
+
+void maze::sortPriorityQueue(priority_queue<node> &pq, graph& g)
+// sorts priority queue for Dijkstra's Algorithm purposes
+{
+        //empty queue
+        while (!pq.empty())
+                pq.pop();
+        
+        //fill in priority queue with unvisited nodes
+        for (int i = 0; i < g.numNodes(); i++)
+        {
+                if (g.isVisited(i)) continue;
+                pq.push(g.getNode(i));
+        }
+}
